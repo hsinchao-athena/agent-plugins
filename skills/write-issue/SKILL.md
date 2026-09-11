@@ -17,6 +17,16 @@ Separate observations from explanations. Link logs, traces, screenshots, reports
 
 Never invent measurements, reproduction steps, root causes, user demand, or agreed thresholds. Label assumptions and proposed targets. Ask only about missing information that changes scope, acceptance, or reversibility; continue drafting the rest. Mark unresolved blockers explicitly. If the cause or benefit is too uncertain for an implementation issue, frame a bounded investigation with an evidence deliverable and a decision it must enable.
 
+## Align on frontend visuals
+
+For frontend issues that change appearance or interaction flows, prompt the issue creator to align on the visual outcome before marking the issue ready for implementation. Prefer an attached image of the agreed mockup or prototype; an accessible, stable link to a specific design or prototype version also works. For a visual bug, include the current screenshot and an annotated expected result or an existing approved reference. Reuse an adequate reference already supplied rather than asking again.
+
+Record which reference is agreed, which visible properties and interactions are acceptance requirements, and which details remain open to executor judgment. Cover relevant screen sizes and states, such as loading, empty, error, or disabled, only where they affect this change. Add short behavior notes for interactions and accessibility requirements that a static image cannot communicate. A screenshot of the current problem alone does not establish the intended outcome.
+
+If the intended visual outcome is missing or disputed, ask for a reference or offer to help create a mockup or prototype for alignment. Keep drafting the rest, but mark visual alignment as unresolved; a generated proposal is not automatically an agreed design. The executor should not have to guess the intended appearance. For frontend work with no visual or interaction change, state that existing presentation and behavior are preserved instead of requiring a new mockup.
+
+Tie visual acceptance to comparison with the agreed reference in the relevant states and screen sizes, alongside functional checks. The reference defines the observable result, not the component structure, CSS technique, or other implementation mechanics.
+
 ## Form the hypothesis
 
 Use this shape: **If we change X, then Y will improve for Z, because of the suspected relationship R.** Make X a capability or observable behavior and Y a verifiable outcome. Treat the explanation as a hypothesis until evidence supports it.
@@ -67,6 +77,10 @@ Use a short outcome-oriented title. The following is a default outline, not a fo
 
 ## Hypothesis
 [If X, then Y for Z, because R.]
+
+## Visual outcome (when applicable)
+[Attached agreed mockup or versioned prototype link; required states,
+screen sizes, behavior notes, and any unresolved visual decisions.]
 
 ## Scope and constraints
 [Boundaries, non-goals, justified constraints, and blocking dependencies.]
