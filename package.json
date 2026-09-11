@@ -11,7 +11,7 @@
     "validate": "npm run validate:manifest && npm run validate:layout && npm run validate:skills",
     "validate:manifest": "node scripts/validate-manifest.mjs",
     "validate:layout": "node --test test/*.test.mjs",
-    "validate:skills": "skills-ref validate skills/spacex-simplify && skills-ref validate skills/quiz-me && skills-ref validate skills/repo-init"
+    "validate:skills": "skills-ref validate skills/spacex-simplify && skills-ref validate skills/quiz-me && skills-ref validate skills/repo-init && skills-ref validate skills/write-issue"
   },
   "devDependencies": {
     "ajv": "8.20.0",

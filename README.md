@@ -4,6 +4,7 @@ A skills-only [Agent Plugin](https://agent-plugins.org/specification) maintained
 
 ## Included skills
 
+- [`write-issue`](skills/write-issue/SKILL.md): drafts executable engineering issues with evidence, testable hypotheses, outcome-based acceptance criteria, and rollback and retirement decisions while preserving implementer autonomy.
 - [`quiz-me`](skills/quiz-me/SKILL.md): writes an evidence-based HTML change report, holds an open clarification and teach-back conversation, then adaptively quizzes the user with a transparent scorecard before they merge or declare substantial work complete.
 - [`repo-init`](skills/repo-init/SKILL.md): interactively initializes repository guidance, including a client-aware user-scoped simple-technical-English policy and a repository-scoped alternative.
 - [`spacex-simplify`](skills/spacex-simplify/SKILL.md): applies a SpaceX-inspired engineering review loop to plans, pull requests, specifications, code changes, and architecture proposals.
