@@ -21,7 +21,7 @@ This skill is a fire-and-forget browser card. Do not treat it as `quiz-me`. That
 
 1. Resolve the real PR number, URL, and a one-line summary. The page shows these first: a hyperlinked `PR #<number>` line, then the summary.
 2. Write one high-leverage question on the PR's purpose, motivation, or key trade-off.
-3. Write 3-5 concrete options. Exactly one `correct: true`. Each option needs a `why`. Write them in any order. The renderer shuffles the options, then assigns letters `A`–`E`, so the correct answer is not always first.
+3. Write 3-5 concrete options. Exactly one `correct: true`. Each option needs a `why`. Write them in any order. The renderer runs a Fisher-Yates shuffle seeded by `pr.number`, then assigns letters `A`–`E`. If the correct option is still first, it swaps that option into a later slot so `A` is never the right answer.
 4. Do not add an `Other` option.
 5. Write only this JSON to a temp file. Do not invent CSS, HTML, or JS.
 

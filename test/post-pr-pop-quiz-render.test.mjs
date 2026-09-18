@@ -33,12 +33,18 @@ function writeQuiz(directory, extra = {}) {
 }
 
 function renderQuiz(quizPath, seed) {
+  const env = { ...process.env };
+  if (seed === undefined || seed === '') {
+    delete env.POST_PR_POP_QUIZ_SHUFFLE_SEED;
+  } else {
+    env.POST_PR_POP_QUIZ_SHUFFLE_SEED = String(seed);
+  }
   const htmlPath = execFileSync(
     'python3',
     [renderScript, '--no-open', quizPath],
     {
       encoding: 'utf8',
-      env: { ...process.env, POST_PR_POP_QUIZ_SHUFFLE_SEED: String(seed) },
+      env,
     },
   ).trim();
   const html = readFileSync(htmlPath, 'utf8');
@@ -56,6 +62,7 @@ test('renders a hyperlinked PR header and shuffles answers before assigning lett
     const quizPath = writeQuiz(directory);
     const first = renderQuiz(quizPath, 1);
     const second = renderQuiz(quizPath, 2);
+    const again = renderQuiz(quizPath, 1);
 
     assert.match(first.html, /id="pr-link"/);
     assert.match(first.html, /id="pr-summary"/);
@@ -70,11 +77,39 @@ test('renders a hyperlinked PR header and shuffles answers before assigning lett
       ['A', 'B', 'C', 'D'],
     );
     assert.equal(first.quiz.options.filter((option) => option.correct).length, 1);
+    assert.equal(first.quiz.options[0].correct, false);
+    assert.equal(second.quiz.options[0].correct, false);
+    assert.deepEqual(
+      first.quiz.options.map((option) => option.text),
+      again.quiz.options.map((option) => option.text),
+    );
     assert.notDeepEqual(
       first.quiz.options.map((option) => option.text),
       second.quiz.options.map((option) => option.text),
     );
-    assert.equal(first.quiz.options[0].text === 'Correct reason.', false);
+  } finally {
+    rmSync(directory, { recursive: true, force: true });
+  }
+});
+
+test('PR-number seeds keep the correct option off slot A', () => {
+  const directory = mkdtempSync(join(tmpdir(), 'post-pr-pop-quiz-pr-seed-'));
+
+  try {
+    const seen = new Set();
+    for (const prNumber of [1, 2, 19, 20, 100]) {
+      const quizPath = writeQuiz(directory, {
+        pr: {
+          number: prNumber,
+          url: `https://github.com/olala7846/agent-plugins/pull/${prNumber}`,
+          summary: 'Add a locked-template browser pop quiz.',
+        },
+      });
+      const rendered = renderQuiz(quizPath, '');
+      assert.equal(rendered.quiz.options[0].correct, false, `PR ${prNumber} left correct in A`);
+      seen.add(rendered.quiz.options.map((option) => option.text).join('|'));
+    }
+    assert.ok(seen.size > 1, 'different PR numbers should change option order');
   } finally {
     rmSync(directory, { recursive: true, force: true });
   }

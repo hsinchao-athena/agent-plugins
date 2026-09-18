@@ -85,8 +85,8 @@ test('documents a PR header and shuffled pop-quiz answers', () => {
   assert.match(skill, /"number": 19,/);
   assert.match(skill, /"url": "https:\/\/github.com\/olala7846\/agent-plugins\/pull\/19"/);
   assert.match(skill, /"summary":/);
-  assert.match(skill, /renderer shuffles the options/);
-  assert.match(skill, /correct answer is not always first/);
+  assert.match(skill, /Fisher-Yates shuffle seeded by `pr.number`/);
+  assert.match(skill, /`A` is never the right answer/);
 });
 
 test('renders quiz diagrams from Mermaid without shipping a Mermaid runtime', () => {

@@ -66,14 +66,15 @@ def load_quiz(path: Path) -> dict:
     if correct_count != 1:
         fail("Exactly one option must have correct=true.")
 
-    shuffle_options(normalized)
+    pr = load_pr(raw.get("pr"))
+    shuffle_options(normalized, pr["number"])
     for index, option in enumerate(normalized):
         letter = LETTERS[index]
         option["id"] = letter.lower()
         option["letter"] = letter
 
     return {
-        "pr": load_pr(raw.get("pr")),
+        "pr": pr,
         "question": question.strip(),
         "options": normalized,
     }
@@ -99,10 +100,24 @@ def load_pr(raw: object) -> dict:
     return {"number": number, "url": url.strip(), "summary": summary}
 
 
-def shuffle_options(options: list[dict]) -> None:
-    seed = os.environ.get("POST_PR_POP_QUIZ_SHUFFLE_SEED")
-    rng = random.Random(int(seed)) if seed not in {None, ""} else random.Random()
-    rng.shuffle(options)
+def shuffle_seed(pr_number: int) -> int:
+    override = os.environ.get("POST_PR_POP_QUIZ_SHUFFLE_SEED")
+    if override not in {None, ""}:
+        return int(override)
+    return pr_number
+
+
+def shuffle_options(options: list[dict], pr_number: int) -> None:
+    """PR-seeded Fisher-Yates. The correct option is never left in slot A."""
+    rng = random.Random(shuffle_seed(pr_number))
+    for index in range(len(options) - 1, 0, -1):
+        swap = rng.randrange(index + 1)
+        options[index], options[swap] = options[swap], options[index]
+
+    correct_at = next(index for index, option in enumerate(options) if option["correct"])
+    if correct_at == 0:
+        swap = 1 + rng.randrange(len(options) - 1)
+        options[0], options[swap] = options[swap], options[0]
 
 
 def embed_json(quiz: dict) -> str:
