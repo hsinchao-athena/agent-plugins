@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Post PR Merge Pop-Quiz</title>
+  <style>
+    :root {
+      color-scheme: dark;
+      --bg: #141414;
+      --card: #1e1e1e;
+      --card-border: #2a2a2a;
+      --text: #ececec;
+      --muted: #9a9a9a;
+      --option: #252525;
+      --option-border: #333;
+      --option-hover: #2d2d2d;
+      --letter: #8a8a8a;
+      --correct: #3dd68c;
+      --correct-bg: #163226;
+      --correct-border: #2a7a52;
+      --wrong: #f07178;
+      --wrong-bg: #3a1d21;
+      --wrong-border: #7a343a;
+      --accent: #d4a017;
+      --focus: #7aa2f7;
+      --radius: 14px;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
+    @media (prefers-color-scheme: light) {
+      :root {
+        color-scheme: light;
+        --bg: #f4f4f5;
+        --card: #ffffff;
+        --card-border: #e4e4e7;
+        --text: #18181b;
+        --muted: #71717a;
+        --option: #fafafa;
+        --option-border: #e4e4e7;
+        --option-hover: #f4f4f5;
+        --letter: #71717a;
+        --correct: #15803d;
+        --correct-bg: #ecfdf3;
+        --correct-border: #86efac;
+        --wrong: #b91c1c;
+        --wrong-bg: #fef2f2;
+        --wrong-border: #fecaca;
+        --accent: #a16207;
+        --focus: #2563eb;
+      }
+    }
+
+    * { box-sizing: border-box; }
+    html, body { margin: 0; min-height: 100%; background: var(--bg); color: var(--text); }
+    body { display: flex; justify-content: center; padding: 40px 16px 64px; }
+
+    .quiz {
+      width: min(720px, 100%);
+      background: var(--card);
+      border: 1px solid var(--card-border);
+      border-radius: var(--radius);
+      padding: 22px 22px 18px;
+      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.28);
+    }
+
+    .eyebrow {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      gap: 12px;
+      margin-bottom: 10px;
+      color: var(--muted);
+      font-size: 12px;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+
+    h1 {
+      margin: 0 0 18px;
+      font-size: 1.05rem;
+      font-weight: 560;
+      line-height: 1.45;
+    }
+
+    .options { display: grid; gap: 8px; }
+
+    .option {
+      display: block;
+      width: 100%;
+      text-align: left;
+      background: var(--option);
+      border: 1px solid var(--option-border);
+      border-radius: 10px;
+      color: inherit;
+      padding: 12px 14px;
+      cursor: pointer;
+      transition: background 0.12s ease, border-color 0.12s ease;
+    }
+
+    .option:hover { background: var(--option-hover); }
+    .option:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
+
+    .option-row {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+    }
+
+    .letter {
+      flex: 0 0 1.4rem;
+      color: var(--letter);
+      font-weight: 650;
+      line-height: 1.45;
+    }
+
+    .option-text { flex: 1; line-height: 1.45; }
+    .picked-flag {
+      display: none;
+      margin-left: 8px;
+      color: var(--accent);
+      font-size: 12px;
+      font-weight: 650;
+      white-space: nowrap;
+    }
+
+    .why {
+      display: none;
+      margin: 10px 0 2px 1.4rem;
+      padding: 10px 12px;
+      border-left: 3px solid var(--muted);
+      color: var(--muted);
+      line-height: 1.5;
+      font-size: 0.94rem;
+    }
+
+    .option.is-correct { background: var(--correct-bg); border-color: var(--correct-border); }
+    .option.is-wrong { background: var(--wrong-bg); border-color: var(--wrong-border); }
+    .option.is-correct .letter { color: var(--correct); }
+    .option.is-wrong .letter { color: var(--wrong); }
+    .option.is-correct .why { display: block; border-left-color: var(--correct); color: var(--text); }
+    .option.is-wrong .why { display: block; border-left-color: var(--wrong); color: var(--text); }
+    .option.is-picked .picked-flag { display: inline; }
+
+    .verdict {
+      font-weight: 700;
+      margin-right: 0.35rem;
+    }
+    .option.is-correct .verdict { color: var(--correct); }
+    .option.is-wrong .verdict { color: var(--wrong); }
+
+    footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      margin-top: 16px;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .actions { display: flex; gap: 8px; }
+
+    button.ghost {
+      background: transparent;
+      border: 1px solid var(--option-border);
+      color: var(--text);
+      border-radius: 8px;
+      padding: 6px 10px;
+      cursor: pointer;
+    }
+    button.ghost:hover { background: var(--option-hover); }
+    button.ghost:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
+
+    .hint { margin: 0 0 14px; color: var(--muted); font-size: 13px; }
+  </style>
+</head>
+<body>
+  <main class="quiz">
+    <div class="eyebrow">
+      <span>Post PR Merge Pop-Quiz</span>
+      <span id="progress">Explored 0 of 0</span>
+    </div>
+    <h1 id="question"></h1>
+    <p class="hint">Click any option. You can keep opening the others after the first pick.</p>
+    <div class="options" id="options"></div>
+    <footer>
+      <span id="status">No pick yet. This page does not block the agent.</span>
+      <div class="actions">
+        <button class="ghost" type="button" id="reveal-all">Reveal all</button>
+        <button class="ghost" type="button" id="reset">Reset</button>
+      </div>
+    </footer>
+  </main>
+  <script id="quiz-data" type="application/json">__QUIZ_JSON__</script>
+  <script>
+    const QUIZ = JSON.parse(document.getElementById("quiz-data").textContent);
+    const questionEl = document.getElementById("question");
+    const optionsEl = document.getElementById("options");
+    const progressEl = document.getElementById("progress");
+    const statusEl = document.getElementById("status");
+    const revealed = new Set();
+    let firstPick = null;
+
+    questionEl.textContent = QUIZ.question;
+
+    function el(tag, className, text) {
+      const node = document.createElement(tag);
+      if (className) node.className = className;
+      if (text != null) node.textContent = text;
+      return node;
+    }
+
+    function render() {
+      optionsEl.replaceChildren();
+      QUIZ.options.forEach((option) => {
+        const button = el("button", "option");
+        button.type = "button";
+        button.dataset.id = option.id;
+        button.setAttribute("aria-expanded", revealed.has(option.id) ? "true" : "false");
+        if (revealed.has(option.id)) {
+          button.classList.add(option.correct ? "is-correct" : "is-wrong");
+        }
+        if (firstPick === option.id) button.classList.add("is-picked");
+
+        const row = el("div", "option-row");
+        row.append(el("span", "letter", option.letter));
+        const text = el("span", "option-text", option.text + " ");
+        text.append(el("span", "picked-flag", "Your pick"));
+        row.append(text);
+
+        const why = el("div", "why");
+        why.append(el("span", "verdict", option.correct ? "Right." : "Wrong."));
+        why.append(document.createTextNode(" " + option.why));
+
+        button.append(row, why);
+        button.addEventListener("click", () => reveal(option.id));
+        optionsEl.appendChild(button);
+      });
+      progressEl.textContent = `Explored ${revealed.size} of ${QUIZ.options.length}`;
+      if (!firstPick) {
+        statusEl.textContent = "No pick yet. This page does not block the agent.";
+        return;
+      }
+      const picked = QUIZ.options.find((option) => option.id === firstPick);
+      statusEl.textContent = picked.correct
+        ? "First pick was right. Open the wrong options to see why they fail."
+        : "First pick was wrong. Open the others, including the right one.";
+    }
+
+    function reveal(id) {
+      if (!firstPick) firstPick = id;
+      revealed.add(id);
+      render();
+    }
+
+    document.getElementById("reveal-all").addEventListener("click", () => {
+      QUIZ.options.forEach((option) => revealed.add(option.id));
+      render();
+    });
+
+    document.getElementById("reset").addEventListener("click", () => {
+      revealed.clear();
+      firstPick = null;
+      render();
+    });
+
+    document.addEventListener("keydown", (event) => {
+      const key = event.key.toLowerCase();
+      const option = QUIZ.options.find((item) => item.letter.toLowerCase() === key || item.id === key);
+      if (option) reveal(option.id);
+    });
+
+    render();
+  </script>
+</body>
+</html>

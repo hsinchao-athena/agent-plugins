@@ -1,9 +1,10 @@
 # olala7846-agent-plugins
 
-A skills-only [Agent Plugin](https://agent-plugins.org/specification) maintained by [Hsin-Cheng Chao](https://github.com/olala7846). Version `0.3.0` adds Mermaid-rendered, offline-safe diagrams to `quiz-me` reports.
+A skills-only [Agent Plugin](https://agent-plugins.org/specification) maintained by [Hsin-Cheng Chao](https://github.com/olala7846). Version `0.4.0` adds `post-pr-pop-quiz`, a fire-and-forget browser comprehension card rendered from a locked HTML template.
 
 ## Included skills
 
+- [`post-pr-pop-quiz`](skills/post-pr-pop-quiz/SKILL.md): opens a non-blocking browser quiz from a locked HTML template so an agent can check PR comprehension without waiting for an answer. Distinct from `quiz-me`, which is a scored teach-back.
 - [`quiz-me`](skills/quiz-me/SKILL.md): writes an evidence-based HTML change report, holds an open clarification and teach-back conversation, then adaptively quizzes the user with a transparent scorecard before they merge or declare substantial work complete.
 - [`repo-init`](skills/repo-init/SKILL.md): interactively initializes repository guidance, including a client-aware user-scoped simple-technical-English policy and a repository-scoped alternative.
 - [`spacex-simplify`](skills/spacex-simplify/SKILL.md): applies a SpaceX-inspired engineering review loop to plans, pull requests, specifications, code changes, and architecture proposals.
