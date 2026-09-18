@@ -19,13 +19,19 @@ This skill is a fire-and-forget browser card. Do not treat it as `quiz-me`. That
 
 ## Steps
 
-1. Write one high-leverage question on the PR's purpose, motivation, or key trade-off.
-2. Write 3-5 concrete options. Exactly one `correct: true`. Each option needs a `why`.
-3. Do not add an `Other` option.
-4. Write only this JSON to a temp file. Do not invent CSS, HTML, or JS.
+1. Resolve the real PR number, URL, and a one-line summary. The page shows these first: a hyperlinked `PR #<number>` line, then the summary.
+2. Write one high-leverage question on the PR's purpose, motivation, or key trade-off.
+3. Write 3-5 concrete options. Exactly one `correct: true`. Each option needs a `why`. Write them in any order. The renderer shuffles the options, then assigns letters `A`–`E`, so the correct answer is not always first.
+4. Do not add an `Other` option.
+5. Write only this JSON to a temp file. Do not invent CSS, HTML, or JS.
 
 ```json
 {
+  "pr": {
+    "number": 19,
+    "url": "https://github.com/olala7846/agent-plugins/pull/19",
+    "summary": "Add a locked-template browser pop quiz so agents do not block on AskQuestion."
+  },
   "question": "Why must the planner and executor share one feature map?",
   "options": [
     {"text": "Correct reason.", "correct": true, "why": "Why this is right."},
@@ -35,7 +41,7 @@ This skill is a fire-and-forget browser card. Do not treat it as `quiz-me`. That
 }
 ```
 
-5. Render and open with the locked template. Run `python3 scripts/render.py <quiz.json>` from this skill directory (`skills/post-pr-pop-quiz/` in this repository, or the installed skill path after plugin install):
+6. Render and open with the locked template. Run `python3 scripts/render.py <quiz.json>` from this skill directory (`skills/post-pr-pop-quiz/` in this repository, or the installed skill path after plugin install):
 
 ```bash
 python3 scripts/render.py /tmp/post-pr-pop-quiz.json
@@ -43,14 +49,14 @@ python3 scripts/render.py /tmp/post-pr-pop-quiz.json
 
 `scripts/render.py` resolves `template.html` via `Path(__file__).resolve().parent.parent`. The script prints the HTML path and opens it. If `/tmp` is unavailable, pass a JSON file anywhere the script can read; it still writes HTML under `/tmp`.
 
-6. In chat, print only:
+7. In chat, print only:
 
 ```text
 [Post PR Merge Pop-Quiz] opened <html-path>
-<one-sentence question>
+PR #<number> <one-sentence question>
 ```
 
-7. Continue the PR work. Do not pause for a selection.
+8. Continue the PR work. Do not pause for a selection.
 
 ## Do not
 

@@ -76,6 +76,21 @@
       text-transform: uppercase;
     }
 
+    .pr-context {
+      margin: 0 0 14px;
+      color: var(--muted);
+      font-size: 0.94rem;
+      line-height: 1.45;
+    }
+    .pr-context a {
+      color: var(--focus);
+      font-weight: 650;
+      text-decoration: none;
+    }
+    .pr-context a:hover { text-decoration: underline; }
+    .pr-context a:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
+    .pr-summary { display: block; margin-top: 4px; color: var(--text); }
+
     h1 {
       margin: 0 0 18px;
       font-size: 1.05rem;
@@ -181,6 +196,10 @@
       <span>Post PR Merge Pop-Quiz</span>
       <span id="progress">Explored 0 of 0</span>
     </div>
+    <p class="pr-context">
+      <a id="pr-link" href="#" target="_blank" rel="noopener noreferrer"></a>
+      <span id="pr-summary" class="pr-summary"></span>
+    </p>
     <h1 id="question"></h1>
     <p class="hint">Click any option. You can keep opening the others after the first pick.</p>
     <div class="options" id="options"></div>
@@ -202,6 +221,12 @@
     const revealed = new Set();
     let firstPick = null;
 
+    const prLink = document.getElementById("pr-link");
+    const prSummary = document.getElementById("pr-summary");
+    prLink.href = QUIZ.pr.url;
+    prLink.textContent = "PR #" + QUIZ.pr.number;
+    prSummary.textContent = QUIZ.pr.summary;
+    document.title = "Post PR Merge Pop-Quiz · PR #" + QUIZ.pr.number;
     questionEl.textContent = QUIZ.question;
 
     function el(tag, className, text) {

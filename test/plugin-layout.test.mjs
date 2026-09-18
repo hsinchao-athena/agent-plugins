@@ -74,6 +74,21 @@ test('documents supported user-scoped guidance destinations', () => {
   }
 });
 
+test('documents a PR header and shuffled pop-quiz answers', () => {
+  const skill = readFileSync(
+    pathFromRoot('skills/post-pr-pop-quiz/SKILL.md'),
+    'utf8',
+  );
+
+  assert.match(skill, /hyperlinked `PR #<number>`/);
+  assert.match(skill, /"pr": \{/);
+  assert.match(skill, /"number": 19,/);
+  assert.match(skill, /"url": "https:\/\/github.com\/olala7846\/agent-plugins\/pull\/19"/);
+  assert.match(skill, /"summary":/);
+  assert.match(skill, /renderer shuffles the options/);
+  assert.match(skill, /correct answer is not always first/);
+});
+
 test('renders quiz diagrams from Mermaid without shipping a Mermaid runtime', () => {
   const quizMe = readFileSync(pathFromRoot('skills/quiz-me/SKILL.md'), 'utf8');
 

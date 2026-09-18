@@ -3,12 +3,15 @@
 
 from __future__ import annotations
 
+import argparse
 import json
 import os
+import random
 import subprocess
 import sys
 import tempfile
 from pathlib import Path
+from urllib.parse import urlparse
 
 SKILL_DIR = Path(__file__).resolve().parent.parent
 TEMPLATE_PATH = SKILL_DIR / "template.html"
@@ -36,27 +39,24 @@ def load_quiz(path: Path) -> dict:
 
     normalized = []
     correct_count = 0
-    for index, option in enumerate(options):
+    for index, option in enumerate(options, start=1):
         if not isinstance(option, dict):
-            fail(f"Option {index + 1} must be an object.")
+            fail(f"Option {index} must be an object.")
         text = option.get("text")
         why = option.get("why")
         correct = option.get("correct")
         if not isinstance(text, str) or not text.strip():
-            fail(f"Option {index + 1} needs a non-empty 'text'.")
+            fail(f"Option {index} needs a non-empty 'text'.")
         if not isinstance(why, str) or not why.strip():
-            fail(f"Option {index + 1} needs a non-empty 'why'.")
+            fail(f"Option {index} needs a non-empty 'why'.")
         if not isinstance(correct, bool):
-            fail(f"Option {index + 1} needs boolean 'correct'.")
+            fail(f"Option {index} needs boolean 'correct'.")
         if text.strip().lower().startswith("other"):
             fail("Do not include an Other option. Use only concrete answers.")
         if correct:
             correct_count += 1
-        letter = LETTERS[index]
         normalized.append(
             {
-                "id": letter.lower(),
-                "letter": letter,
                 "text": text.strip(),
                 "correct": correct,
                 "why": why.strip(),
@@ -66,7 +66,43 @@ def load_quiz(path: Path) -> dict:
     if correct_count != 1:
         fail("Exactly one option must have correct=true.")
 
-    return {"question": question.strip(), "options": normalized}
+    shuffle_options(normalized)
+    for index, option in enumerate(normalized):
+        letter = LETTERS[index]
+        option["id"] = letter.lower()
+        option["letter"] = letter
+
+    return {
+        "pr": load_pr(raw.get("pr")),
+        "question": question.strip(),
+        "options": normalized,
+    }
+
+
+def load_pr(raw: object) -> dict:
+    if not isinstance(raw, dict):
+        fail("Quiz JSON must include a 'pr' object with number, url, and summary.")
+    number = raw.get("number")
+    url = raw.get("url")
+    summary = raw.get("summary")
+    if isinstance(number, str) and number.isdigit():
+        number = int(number)
+    if not isinstance(number, int) or number <= 0:
+        fail("pr.number must be a positive integer.")
+    if not isinstance(url, str) or urlparse(url).scheme not in {"http", "https"}:
+        fail("pr.url must be an http(s) URL.")
+    if not isinstance(summary, str) or not summary.strip():
+        fail("pr.summary must be a non-empty string.")
+    summary = " ".join(summary.split())
+    if len(summary) > 200:
+        fail("pr.summary must be at most 200 characters.")
+    return {"number": number, "url": url.strip(), "summary": summary}
+
+
+def shuffle_options(options: list[dict]) -> None:
+    seed = os.environ.get("POST_PR_POP_QUIZ_SHUFFLE_SEED")
+    rng = random.Random(int(seed)) if seed not in {None, ""} else random.Random()
+    rng.shuffle(options)
 
 
 def embed_json(quiz: dict) -> str:
@@ -96,13 +132,20 @@ def open_html(path: Path) -> None:
 
 
 def main(argv: list[str]) -> int:
-    if len(argv) != 2:
-        fail("Usage: render.py /path/to/quiz.json")
-    quiz_path = Path(argv[1])
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("quiz_json", help="Path to the quiz JSON payload")
+    parser.add_argument(
+        "--no-open",
+        action="store_true",
+        help="Write the HTML file without opening a browser",
+    )
+    args = parser.parse_args(argv[1:])
+    quiz_path = Path(args.quiz_json)
     if not quiz_path.is_file():
         fail(f"Quiz JSON not found: {quiz_path}")
     output = write_html(load_quiz(quiz_path))
-    open_html(output)
+    if not args.no_open:
+        open_html(output)
     print(output)
     return 0
 
