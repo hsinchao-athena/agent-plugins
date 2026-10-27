@@ -1,11 +1,11 @@
 ---
 name: learn-from-pr
-description: "Use this skill when the user asks to learn from a pull request, understand a PR or branch change, get an explainer or architecture overview of the code a PR touches, or invokes /learn-from-pr. It writes one short HTML learning document: why the PR exists, a component diagram of the touched code and the code around it, and a map from each changed file to a component. A learner profile controls format and length, and the user can override it. It does not review, gate, quiz, or comment on the PR."
+description: "Use this skill when the user asks to learn from a pull request, understand a PR or branch change, get an explainer or architecture overview of the code a PR touches, or invokes /learn-from-pr. It writes one short HTML learning document: why the PR exists, a before-and-after comparison, a component diagram of the touched code and its neighbors, and a map from each changed file to a component. A learner profile controls format and length, and the user can override it. It does not review, gate, quiz, or comment on the PR."
 ---
 
 # Learn from PR
 
-Write one short learning document that helps the user understand a pull request and the code around it. The document answers four questions in order: why the PR exists, what the touched code connects to, what the PR changes in each part, and whether the change is centralized or scattered.
+Write one short learning document that helps the user understand a pull request and the code around it. Explain why the PR exists, how behavior or structure compares before and after the PR, what the touched code connects to, and whether the change is centralized or scattered.
 
 Use this skill to learn. Do not use it to approve or reject a PR. A person who needs a scored teach-back uses `quiz-me`. A person who needs a review uses a review skill.
 
@@ -61,9 +61,10 @@ What each profile field does:
 ## Step 2: Gather evidence
 
 1. Read the PR description, the linked issue, the commit messages, and the full diff.
-2. For each touched file, read enough surrounding code to find its neighbors within `architecture.neighbor_depth` hops: callers, callees, shared data stores or config, and tests. Use search, not guesses.
-3. Record the entry points and the data flow through the touched code.
-4. Note anything you could not read. State it as unknown in the document.
+2. For each behavior or structure you explain, read the relevant code at the diff's comparison base and resulting revision or working tree. Record the comparison revisions. For a deleted entry point, read any retained or replacement path before describing what remains.
+3. For each touched file, read enough surrounding code to find its neighbors within `architecture.neighbor_depth` hops: callers, callees, shared data stores or config, and tests. Use search, not guesses.
+4. Record the entry points and the data flow through the touched code.
+5. Note anything you could not read. State it as unknown in the document.
 
 ## Step 3: Build the component model
 
@@ -80,7 +81,8 @@ Follow "Components and IDs" in `references/report-structure.md`. In short:
 2. Write the sections of `structure.sections` in order. Follow `references/report-structure.md` for the content, size budget, diagram, rendering tiers, change map, shape of the change, and HTML rules.
 3. Use `references/report-theme.css` unchanged as the style.
 4. Render the diagram with the first rendering tier that works. If the first tier fails, use the next one.
-5. Open the file in the default browser when the system has a command for it (`open` on macOS, `xdg-open` on Linux). Always print the path.
+5. If `context` is selected, check the comparison against "Before and after" in `references/report-structure.md`. Every before item must have a paired after state and effect, or an explicit unknown. Keep sections omitted by the profile omitted.
+6. Open the file in the default browser when the system has a command for it (`open` on macOS, `xdg-open` on Linux). Always print the path.
 
 ## Step 5: Reply in chat
 

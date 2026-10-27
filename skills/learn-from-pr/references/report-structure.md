@@ -28,8 +28,8 @@ Write the sections in the order of `structure.sections`. Write only the sections
 | ID | Content | Format |
 | --- | --- | --- |
 | `why` | User need, constraints, and non-goals. Mark each item stated, inferred, or unknown. | Three lines or fewer |
-| `context` | What the system did before the PR, in terms of the components in the diagram. | Short list or table |
-| `prediction` | One question: "Before you read on, which components would you change, and how?" The document is static, so the skill does not wait for an answer. Put this section before `architecture`, because the diagram marks the touched components. | One sentence |
+| `context` | Compare behavior or structure before and after the PR, using the same components or scenarios. See "Before and after". | Paired list or table |
+| `prediction` | One question: "Before you read on, which components would you change, and how?" The document is static, so the skill does not wait for an answer. Put this section before `context` and `architecture`, because the comparison and diagram reveal the changes. | One sentence |
 | `architecture` | The component diagram. See "Diagram". | Diagram plus a legend sentence |
 | `change_map` | One row per touched, new, or removed component, plus `Other`. See "Change map". | Table |
 | `walkthrough` | One block per touched component, in data-flow order, from entry point to exit. State what changed and why. Use `file:line` references. Name an alternative only when the code or the PR shows it. | Short prose |
@@ -37,6 +37,19 @@ Write the sections in the order of `structure.sections`. Write only the sections
 | `takeaways` | Three bullets or fewer. Each is a pattern, a trade-off, or a codebase fact that helps with the next PR. Each cites evidence. | List |
 
 If a section has nothing true to say, write one line that says so. Do not invent content.
+
+## Before and after
+
+When `context` is selected, title the section "Before and after".
+
+- Compare the same component or scenario in each pair. Use component IDs from the diagram.
+- For a table, use `Component or scenario`, `Before`, `After`, `Effect`, and `Evidence`. For a list, keep the same fields together in each item.
+- Describe the resulting behavior or structure in `After`. A list of deleted or edited files belongs in the change map.
+- For cleanup and refactoring, distinguish removed capabilities, removed entry points, retained capabilities, and replacement paths. State how a retained capability is reached after the change. If externally visible behavior stays the same, say so and explain the structural change.
+- Cite base and resulting code where available. For a new or removed capability, state its absence on the relevant side and cite the diff. Mark anything you could not establish as unknown.
+- Separate expected benefits from measured results. Apply the evidence labels to intent and design claims. Do not infer runtime savings or behavior preservation from line counts.
+
+Before opening the report, check that each before item has a paired after state and effect, or an explicit unknown. The reader must be able to understand the comparison within this section, without assembling it from the change map or walkthrough.
 
 ## Diagram
 

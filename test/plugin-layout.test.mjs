@@ -29,7 +29,7 @@ test('declares the expected Agent Plugin manifest', () => {
   assert.deepEqual(manifest, {
     $schema: 'https://agent-plugins.org/schemas/1.0.0/plugin.schema.json',
     name: 'olala7846-agent-plugins',
-    version: '0.6.0',
+    version: '0.6.1',
     description: 'A collection of agent skills maintained by olala7846.',
     author: {
       name: 'Hsin-Cheng Chao',
