@@ -1,0 +1,37 @@
+{
+  "schema_version": 1,
+  "name": "hsin-cheng-default",
+  "communication": {
+    "writing_style": "asd-ste100",
+    "format_priority": ["diagram", "table", "prose"],
+    "length": {
+      "target_read_minutes": 5,
+      "max_words_per_section": 120
+    }
+  },
+  "structure": {
+    "sections": [
+      "why",
+      "context",
+      "architecture",
+      "change_map",
+      "walkthrough",
+      "change_shape"
+    ]
+  },
+  "architecture": {
+    "diagram_type": "component",
+    "neighbor_depth": 1,
+    "max_nodes": 12,
+    "show_change_size": true
+  },
+  "code_mapping": {
+    "map_changes_to_components": true,
+    "granularity": "file_and_hunk",
+    "max_improvement_notes": 3
+  },
+  "output": {
+    "format": "html",
+    "location": "/tmp"
+  }
+}

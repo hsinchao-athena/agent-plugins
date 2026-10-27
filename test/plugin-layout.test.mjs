@@ -29,7 +29,7 @@ test('declares the expected Agent Plugin manifest', () => {
   assert.deepEqual(manifest, {
     $schema: 'https://agent-plugins.org/schemas/1.0.0/plugin.schema.json',
     name: 'olala7846-agent-plugins',
-    version: '0.5.0',
+    version: '0.6.0',
     description: 'A collection of agent skills maintained by olala7846.',
     author: {
       name: 'Hsin-Cheng Chao',
@@ -48,7 +48,13 @@ test('contains only immediately discoverable, complete skills', () => {
   const skillsRoot = pathFromRoot('skills');
   const entries = readdirSync(skillsRoot, { withFileTypes: true });
 
-  const skillNames = ['init-coding-agent', 'post-pr-pop-quiz', 'quiz-me', 'spacex-simplify'];
+  const skillNames = [
+    'init-coding-agent',
+    'learn-from-pr',
+    'post-pr-pop-quiz',
+    'quiz-me',
+    'spacex-simplify',
+  ];
   assert.deepEqual(entries.map((entry) => entry.name).sort(), skillNames);
   assert.ok(entries.every((entry) => entry.isDirectory()));
 

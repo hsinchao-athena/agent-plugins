@@ -1,0 +1,139 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/olala7846/agent-plugins/skills/learn-from-pr/learner-profile.schema.json",
+  "title": "learn-from-pr learner profile",
+  "description": "A learner profile, or a partial one. The built-in default is complete. A user override and a per-report override list only the fields they change.",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {
+      "description": "Version of this schema.",
+      "const": 1
+    },
+    "name": {
+      "description": "A short label for the profile. The skill shows it in the profile notice.",
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 60
+    },
+    "communication": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "writing_style": {
+          "description": "asd-ste100 applies the ASD-STE100-inspired rules in SKILL.md. plain applies no extra rules.",
+          "enum": ["asd-ste100", "plain"]
+        },
+        "format_priority": {
+          "description": "Format order for each piece of information. Use the first format that fits. Prose is last.",
+          "type": "array",
+          "items": { "enum": ["diagram", "table", "prose"] },
+          "minItems": 1,
+          "uniqueItems": true
+        },
+        "length": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "target_read_minutes": {
+              "description": "Target reading time for the prose in the document. The skill allows 150 words for each minute.",
+              "type": "number",
+              "minimum": 1,
+              "maximum": 30
+            },
+            "max_words_per_section": {
+              "description": "Hard limit for the prose in one section.",
+              "type": "integer",
+              "minimum": 20,
+              "maximum": 500
+            }
+          }
+        }
+      }
+    },
+    "structure": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "sections": {
+          "description": "Ordered list of the sections to write. A section that is not in the list is off.",
+          "type": "array",
+          "items": {
+            "enum": [
+              "why",
+              "context",
+              "prediction",
+              "architecture",
+              "change_map",
+              "walkthrough",
+              "change_shape",
+              "takeaways"
+            ]
+          },
+          "minItems": 1,
+          "uniqueItems": true
+        }
+      }
+    },
+    "architecture": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "diagram_type": {
+          "description": "Kind of diagram in the architecture section.",
+          "enum": ["component"]
+        },
+        "neighbor_depth": {
+          "description": "Number of hops from a touched component to include. 0 shows only touched components.",
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 2
+        },
+        "max_nodes": {
+          "description": "Largest number of nodes in the diagram. The skill groups unchanged neighbors first when it must cut nodes.",
+          "type": "integer",
+          "minimum": 4,
+          "maximum": 20
+        },
+        "show_change_size": {
+          "description": "Show files changed and lines added and removed on each touched node.",
+          "type": "boolean"
+        }
+      }
+    },
+    "code_mapping": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "map_changes_to_components": {
+          "description": "Assign every changed file and hunk to a diagram component, and refer to it by component ID.",
+          "type": "boolean"
+        },
+        "granularity": {
+          "description": "file lists files only. file_and_hunk also lists line ranges.",
+          "enum": ["file", "file_and_hunk"]
+        },
+        "max_improvement_notes": {
+          "description": "Largest number of improvement notes in the change_shape section. 0 turns the notes off.",
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 5
+        }
+      }
+    },
+    "output": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "format": {
+          "enum": ["html"]
+        },
+        "location": {
+          "description": "Parent directory for the report directory. The skill never writes the report to a repository.",
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    }
+  }
+}
